@@ -12,8 +12,6 @@ import (
 	"time"
 )
 
-const MINUTES_COMMIT_CHECK = 60
-
 func NewGitHubClient(ctx context.Context) *github.Client {
 	ghOwner := os.Getenv("GITHUB_USERNAME")
 	ghToken := os.Getenv("GITHUB_TOKEN")
@@ -35,9 +33,9 @@ func NewGitHubClient(ctx context.Context) *github.Client {
 	return client
 }
 
-func GetCommits(ctx context.Context, owner string, repo string, path string, client *github.Client) {
+func GetCommits(ctx context.Context, owner string, repo string, path string, client *github.Client, interval int) {
 	commits, _, err := client.Repositories.ListCommits(ctx, owner, repo, &github.CommitsListOptions{
-		Since: time.Now().Add(-MINUTES_COMMIT_CHECK * time.Minute),
+		Since: time.Now().Add(-time.Duration(interval) * time.Minute),
 	})
 
 	if err != nil {
@@ -82,6 +80,6 @@ func GetCommits(ctx context.Context, owner string, repo string, path string, cli
 	}
 
 	if len(commits) == 0 {
-		fmt.Printf("No new pushes in the last %d minutes.\n", MINUTES_COMMIT_CHECK)
+		fmt.Printf("No new pushes in the last %d minutes.\n", interval)
 	}
 }

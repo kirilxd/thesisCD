@@ -26,6 +26,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(github.NewCmdGithub())
+	rootCmd.AddCommand(github.NewCmdGithubPoll())
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
