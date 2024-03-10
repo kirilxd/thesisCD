@@ -30,7 +30,7 @@ func NewCmdGithubPoll() *cobra.Command {
 					case <-ticker.C:
 						fmt.Println("Checking for new pushes...")
 						githubClient := github.NewGitHubClient(context.Background())
-						github.GetCommits(context.Background(), "kirilxd", "thesisCD-infra", "test", githubClient, minutesPollInterval)
+						github.GetCommits(context.Background(), os.Getenv("GITHUB_USER"), "thesisCD-infra", "test", githubClient, minutesPollInterval)
 					case <-quit:
 						ticker.Stop()
 						return
