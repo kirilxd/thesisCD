@@ -10,10 +10,10 @@ import (
 func NewCmdGithubWebhook() *cobra.Command {
 	var githubWebhookCmd = &cobra.Command{
 		Use:   "githubwebhook",
-		Short: "Listen for updates about repository updates in webhook",
+		Short: "Listen for updates about repository pushes in webhook",
 		Run: func(cmd *cobra.Command, args []string) {
 			path, _ := cmd.Flags().GetString("path")
-			
+
 			http.HandleFunc("/webhook", func(w http.ResponseWriter, r *http.Request) {
 				github.HandleWebhook(w, r, path)
 			})
