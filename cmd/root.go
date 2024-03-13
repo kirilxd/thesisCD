@@ -26,7 +26,6 @@ func init() {
 	rootCmd.AddCommand(github.NewCmdGithubPoll())
 	rootCmd.AddCommand(github.NewCmdGithubWebhook())
 
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.PersistentFlags().String("repo", "", "Repository name")
 	rootCmd.PersistentFlags().String("path", "", "Path inside repository")
 }
