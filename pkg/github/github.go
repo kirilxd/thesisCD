@@ -5,33 +5,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/google/go-github/v60/github"
-	"golang.org/x/oauth2"
-	"os"
-	"strings"
 	"thesisCD/pkg/kubernetes"
 	"time"
 )
-
-func NewGitHubClient(ctx context.Context) *github.Client {
-	ghOwner := os.Getenv("GITHUB_USERNAME")
-	ghToken := os.Getenv("GITHUB_TOKEN")
-
-	if ghOwner == "" {
-		fmt.Println("Error: GITHUB_USERNAME environment variable is not set.")
-	}
-
-	if ghToken == "" {
-		fmt.Println("Error: GITHUB_TOKEN environment variable is not set.")
-	}
-
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: ghToken},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-
-	client := github.NewClient(tc)
-	return client
-}
 
 func GetCommits(ctx context.Context, owner string, repo string, path string, client *github.Client, interval int) {
 	commits, _, err := client.Repositories.ListCommits(ctx, owner, repo, &github.CommitsListOptions{
@@ -51,7 +27,7 @@ func GetCommits(ctx context.Context, owner string, repo string, path string, cli
 		}
 
 		for _, file := range commitDetail.Files {
-			if strings.HasPrefix(file.GetFilename(), path) {
+			if isPathOfInterest(file.GetFilename(), path) {
 				fmt.Printf("File in the target path changed: %s in commit %s\n", file.GetFilename(), *commit.SHA)
 
 				// Fetch and display the content of the changed file

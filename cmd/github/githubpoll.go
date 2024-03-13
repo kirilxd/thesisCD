@@ -22,6 +22,9 @@ func NewCmdGithubPoll() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Starting to monitor GitHub for new pushes...")
 
+			path, _ := cmd.Flags().GetString("path")
+			repo, _ := cmd.Flags().GetString("repo")
+
 			ticker := time.NewTicker(time.Duration(minutesPollInterval) * time.Minute)
 			quit := make(chan struct{})
 			go func() {
@@ -30,7 +33,7 @@ func NewCmdGithubPoll() *cobra.Command {
 					case <-ticker.C:
 						fmt.Println("Checking for new pushes...")
 						githubClient := github.NewGitHubClient(context.Background())
-						github.GetCommits(context.Background(), os.Getenv("GITHUB_USER"), "thesisCD-infra", "test", githubClient, minutesPollInterval)
+						github.GetCommits(context.Background(), os.Getenv("GITHUB_USER"), repo, path, githubClient, minutesPollInterval)
 					case <-quit:
 						ticker.Stop()
 						return
