@@ -14,10 +14,6 @@ import (
 	"thesisCD/pkg/kubernetes"
 )
 
-type Test struct {
-	Test string "json:test"
-}
-
 func HandleWebhook(w http.ResponseWriter, r *http.Request, path string) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Unsupported HTTP method", http.StatusMethodNotAllowed)

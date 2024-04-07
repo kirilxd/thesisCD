@@ -21,14 +21,14 @@ func NewCmdGitPoll() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Starting to monitor repository for updates...")
 
-			//path, _ := cmd.Flags().GetString("path")
+			path, _ := cmd.Flags().GetString("path")
 			repoUrl, _ := cmd.Flags().GetString("repoUrl")
 
 			ticker := time.NewTicker(time.Duration(minutesPollInterval) * time.Second)
 			quit := make(chan struct{})
 			repo, err := git.CloneRepo(repoUrl)
 			if err != nil {
-				fmt.Printf("Failed to get HEAD: %v\n", err)
+				fmt.Printf("Failed to get repo: %v\n", err)
 				return
 			}
 
@@ -38,7 +38,7 @@ func NewCmdGitPoll() *cobra.Command {
 					case <-ticker.C:
 						fmt.Println("Checking for updates...")
 						var err error
-						err = git.PullAndApplyChanges(repo, "test")
+						err = git.PullAndApplyChanges(repo, path)
 						if err != nil {
 							fmt.Printf("Error pulling updates: %v\n", err)
 							// Handle error, could break or log
