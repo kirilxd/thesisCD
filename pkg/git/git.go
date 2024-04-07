@@ -61,19 +61,30 @@ func checkPathChanges(repo *git.Repository, oldHead, newHead *plumbing.Reference
 		return fmt.Errorf("failed to get new HEAD commit: %v", err)
 	}
 
-	diff, err := newCommit.Patch(oldCommit)
+	diff, err := oldCommit.Patch(newCommit)
 	if err != nil {
 		return fmt.Errorf("failed to get diff: %v", err)
 	}
 
 	for _, filePatch := range diff.FilePatches() {
-		_, to := filePatch.Files()
+		from, to := filePatch.Files()
+
 		if to != nil && strings.Contains(to.Path(), path) {
 			content, err := getFileContentAtCommit(newCommit, to.Path())
 			if err != nil {
 				return fmt.Errorf("failed to get file content for %s: %v", to.Path(), err)
 			}
 			err = kubernetes.ApplyManifest(content)
+			if err != nil {
+				return err
+			}
+		}
+		if to == nil && strings.Contains(from.Path(), path) {
+			content, err := getFileContentAtCommit(oldCommit, from.Path())
+			if err != nil {
+				return fmt.Errorf("failed to get file content for %s: %v", from.Path(), err)
+			}
+			err = kubernetes.DeleteResource(content)
 			if err != nil {
 				return err
 			}
