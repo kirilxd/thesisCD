@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	minutesPollInterval int
+	secondsPollInterval int
 )
 
 func NewCmdGitPoll() *cobra.Command {
@@ -24,7 +24,7 @@ func NewCmdGitPoll() *cobra.Command {
 			path, _ := cmd.Flags().GetString("path")
 			repoUrl, _ := cmd.Flags().GetString("repoUrl")
 
-			ticker := time.NewTicker(time.Duration(minutesPollInterval) * time.Second)
+			ticker := time.NewTicker(time.Duration(secondsPollInterval) * time.Second)
 			quit := make(chan struct{})
 			repo, err := git.CloneRepo(repoUrl)
 			if err != nil {
@@ -59,7 +59,7 @@ func NewCmdGitPoll() *cobra.Command {
 		},
 	}
 
-	gitPollCmd.Flags().IntVarP(&minutesPollInterval, "interval", "i", 5, "Poll interval in minutes")
+	gitPollCmd.Flags().IntVarP(&secondsPollInterval, "interval", "i", 10, "Poll interval in seconds")
 
 	return gitPollCmd
 }
