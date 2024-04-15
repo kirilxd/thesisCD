@@ -16,7 +16,7 @@ var (
 
 func NewCmdGitPoll() *cobra.Command {
 	var gitPollCmd = &cobra.Command{
-		Use:   "gitpoll",
+		Use:   "gitpull",
 		Short: "Poll updates from git repository on an interval",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Starting to monitor repository for updates...")
